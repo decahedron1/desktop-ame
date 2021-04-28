@@ -60,7 +60,7 @@ namespace Desktop_Ame {
 						IntPtr handle = proc.MainWindowHandle;
 						IntPtr cloaked;
 						if ((uint) DwmGetWindowAttribute(handle, (int) DWMWINDOWATTRIBUTE.DWMWA_CLOAKED, out cloaked, 4 /* sizeof int32_t */) == 0)
-							if (cloaked.ToInt32() == 0 /* not cloaked */ && IsWindowVisible(handle))
+							if (cloaked.ToInt32() == 0 /* not cloaked */ && IsWindowVisible(handle) && !IsIconic(handle))
 								targetProcesses.Add(handle);
 					}
 				}
@@ -98,11 +98,11 @@ namespace Desktop_Ame {
 		}
 
 		[DllImport("user32.dll")]
+		static extern bool IsIconic(IntPtr hWnd);
+		[DllImport("user32.dll")]
 		static extern bool IsWindowVisible(IntPtr hwnd);
 		[DllImport("user32.dll", SetLastError = true)]
 		static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
